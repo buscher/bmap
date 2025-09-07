@@ -492,7 +492,7 @@ let hwn = [
   {
     "lat": 51.803286,
     "lng": 10.450144,
-    "title": "Stempelstelle 149 / Kleine Oker"
+    "title": "Stempelstelle 149 / Mühlenberg Altenauer Herzweg"
   },
   {
     "lat": 51.72310999999999836518327356316149234771728515625,
