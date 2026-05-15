@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 set -e
 
@@ -8,13 +8,22 @@ OUTDIR=$(pwd)/out
 mkdir -p ${OUTDIR}
 OUTNAME=$OUTDIR/map.html
 
-${GPX2JS_RS} -i gpx_all -o $OUTDIR/ -s config/ignorelist.txt -c config/custom_group.txt
+OUTDIR_TMP=$(mktemp -d -t bmapXXXXX)
+
+${GPX2JS_RS} -i gpx_all -o $OUTDIR_TMP/ -s config/ignorelist.txt -c config/custom_group.txt
 
 cat template/header.tmp > $OUTNAME
 
 coords_array=("coords_walking" "coords_running" "coords_cycling" "coords_hwn1")
 
-pushd $OUTDIR
+for folder in ${coords_array[@]}; do
+    SRC_DIR=${OUTDIR_TMP}/${folder}
+    DST_DIR=${OUTDIR}/${folder}
+    mkdir -p ${DST_DIR}
+    cat ${SRC_DIR}/*.js > ${DST_DIR}/${folder}.js
+done
+
+pushd ${OUTDIR}
 
 for str in ${coords_array[@]}; do
     for f in $str/*.js;
@@ -28,13 +37,17 @@ popd
 
 cat template/mid.tmp >> $OUTNAME
 
-myArray=("red" "green" "blue" "magenta" "darkorange")
+colorArray=("red" "green" "blue" "magenta" "darkorange")
+for color in ${colorArray[@]}; do
+    echo "const ${color} = \"${color}\"" >> $OUTNAME
+done
+
+
 i=0
-SIZE=${#myArray[@]}
+SIZE=${#colorArray[@]}
 echo $SIZE
 
-pushd $OUTDIR
-
+pushd ${OUTDIR_TMP}
 
 arr_array=("walk" "run" "cycle" "hwn1")
 coords_i=0
@@ -45,7 +58,7 @@ for str in ${arr_array[@]}; do
     do
         echo "polyline script $f file..";
         BASENAME=$(basename $f .js)
-        echo "${str}Arr[${i}] = L.polyline(${BASENAME}, {color: \""${myArray[$((i % SIZE))]}"\"})" >> $OUTNAME
+        echo "${str}Arr[${i}] = L.polyline(${BASENAME}, {color: "${colorArray[$((i % SIZE))]}"})" >> $OUTNAME
         i=$((i+1))
     done
     echo "var ${str}Group = L.layerGroup(${str}Arr);" >> $OUTNAME
@@ -59,3 +72,5 @@ cat template/end.tmp >> $OUTNAME
 uglifyjs points/*.js --output $OUTDIR/points.js
 
 cp -R images $OUTDIR
+
+rm -rf ${OUTDIR_TMP}
