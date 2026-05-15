@@ -23,30 +23,30 @@ for (i = 0; i < hwn_old.length; i++) {
 for (i = 0; i < hwn.length; i++) {
     hwnArr.push(L.marker([hwn[i].lat, hwn[i].lng], {icon: blueIcon}).bindPopup(hwn[i].title));
 }
-var hwnGroup = L.layerGroup(hwnArr);
+const hwnGroup = L.layerGroup(hwnArr);
 
 bnsArr = []
 for (i = 0; i < bns.length; i++) {
     bnsArr[i] = L.marker([bns[i].lat, bns[i].lng], {icon: greenIcon}).bindPopup(bns[i].title);
 }
-var bnsGroup = L.layerGroup(bnsArr);
+const bnsGroup = L.layerGroup(bnsArr);
 
 knsArr = []
 for (i = 0; i < kns.length; i++) {
     knsArr[i] = L.marker([kns[i].lat, kns[i].lng], {icon: redIcon}).bindPopup(kns[i].title);
 }
-var knsGroup = L.layerGroup(knsArr);
+const knsGroup = L.layerGroup(knsArr);
 
 touringenArr = []
 for (i = 0; i < touringen.length; i++) {
     touringenArr[i] = L.marker([touringen[i].lat, touringen[i].lng], {icon: turIcon}).bindPopup(touringen[i].title);
 }
-var touringenGroup = L.layerGroup(touringenArr);
+const touringenGroup = L.layerGroup(touringenArr);
 
 map.addLayer(walkGroup)
 map.addLayer(hwn1Group)
 
-var overlayMaps = {
+const overlayMaps = {
     "Walking": walkGroup,
     "HWN 1": hwn1Group,
     "Running": runGroup,
@@ -57,7 +57,7 @@ var overlayMaps = {
     "Touringen": touringenGroup,
 };
 
-var layerControl = L.control.layers(null, overlayMaps).addTo(map);
+const layerControl = L.control.layers(null, overlayMaps).addTo(map);
 
 locationMarker = undefined
 

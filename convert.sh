@@ -53,15 +53,16 @@ arr_array=("walk" "run" "cycle" "hwn1")
 coords_i=0
 for str in ${arr_array[@]}; do
     i=0
-    echo "${str}Arr = []" >> $OUTNAME
+    echo "const ${str}Arr = [" >> $OUTNAME
     for f in ${coords_array[$coords_i]}/*.js;
     do
         echo "polyline script $f file..";
         BASENAME=$(basename $f .js)
-        echo "${str}Arr[${i}] = L.polyline(${BASENAME}, {color: "${colorArray[$((i % SIZE))]}"})" >> $OUTNAME
+        echo "L.polyline(${BASENAME}, {color: "${colorArray[$((i % SIZE))]}"})," >> $OUTNAME
         i=$((i+1))
     done
-    echo "var ${str}Group = L.layerGroup(${str}Arr);" >> $OUTNAME
+    echo "]" >> $OUTNAME
+    echo "const ${str}Group = L.layerGroup(${str}Arr);" >> $OUTNAME
     coords_i=$((coords_i+1))
 done
 
